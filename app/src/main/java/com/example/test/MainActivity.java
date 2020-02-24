@@ -14,6 +14,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -32,6 +33,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     LocationManager locationManager;
     LocationListener locationListener;
 
+    TimerTask scanTask;
+    Handler handler;
+    Timer mTimer;
 
     public ArrayList<Users> userArrayList;
 
@@ -56,14 +62,12 @@ public class MainActivity extends AppCompatActivity {
             userArrayList = new ArrayList<>();
             mQueue = Volley.newRequestQueue(this);
             jsonParse();
-
-        //if (checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-          //  locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-
             GetLocation();
-      //  }
+            mViewPager = findViewById(R.id.container);
 
-           mViewPager = findViewById(R.id.container);
+        handler  = new Handler();
+        mTimer = new Timer();
+        updateLocation();
     }
 
     private void setupViewPager(ViewPager viewPager){
@@ -82,8 +86,26 @@ public class MainActivity extends AppCompatActivity {
         mPageAdapter= new PagerAdapter(getSupportFragmentManager());
         mPageAdapter.addFragment(mainFrag);
         mPageAdapter.addFragment(mapFrag);
+        mPageAdapter.notifyDataSetChanged();
 
         mViewPager.setAdapter(mPageAdapter);
+    }
+
+    public void updateLocation(){
+
+        scanTask = new TimerTask() {
+            public void run() {
+                handler.post(new Runnable() {
+                    public void run() {
+                        userArrayList.clear();
+                        jsonParse();
+                        GetLocation();
+                        Log.d("LOGGEDLocation", "New refresh");
+                    }
+                });
+            }};
+
+        mTimer.schedule(scanTask, 30000, 30000);
     }
 
     public void jsonParse(){
@@ -140,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(final Location location) {
+
+
 
                 String URL = "https://kamorris.com/lab/register_location.php";
                 StringRequest sr = new StringRequest(Request.Method.POST,URL, new Response.Listener<String>() {

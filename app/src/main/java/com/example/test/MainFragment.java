@@ -58,6 +58,10 @@ public class MainFragment extends Fragment {
         mlayout = new LinearLayoutManager(getContext());
 
         mArraylist = (ArrayList<Users>) getArguments().getSerializable("array");
+        locationManager = getActivity().getSystemService(LocationManager.class);
+        if (getActivity().checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
     }
 
     @Override
@@ -79,15 +83,10 @@ public class MainFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity().checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                     name = userName.getText().toString();
-                }
-
             }
 
         });
-
         return view;
     }
 
