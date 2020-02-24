@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         //if (checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
          //   locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-            GetLocation();
+            //GetLocation();
        // }
 
 
@@ -85,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
         mPageAdapter.addFragment(mainFrag);
         mPageAdapter.addFragment(mapFrag);
 
-        viewPager.setAdapter(mPageAdapter);
-
+        mViewPager.setAdapter(mPageAdapter);
     }
 
     public void jsonParse(){
@@ -116,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
                         userArrayList.add(user);
 
                     }
+                    Log.d("key", userArrayList.get(0).username);
                     Collections.sort(userArrayList);
                     setupViewPager(mViewPager);
 
@@ -123,12 +123,13 @@ public class MainActivity extends AppCompatActivity {
 
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    Log.e("Error", "THIS IS AN ERROR");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Log.d("Error", "THIS IS AN ERROR");
             }
         });
 

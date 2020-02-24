@@ -87,7 +87,24 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     public void onMapReady(GoogleMap googleMap) {
         MapsInitializer.initialize(getContext());
         mMap = googleMap;
-       // mMap.setMapType(googleMap.MAP_TYPE_NORMAL);
+        mMap.setMapType(googleMap.MAP_TYPE_NORMAL);
+
+        for(int i = 0; i < arrayList.size(); i++) {
+            Users user = arrayList.get(i);
+            LatLng lat = new LatLng(Double.valueOf(user.lat), Double.valueOf(user.lon));
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lat, 2);
+            if (mMap != null) {
+                mMap.animateCamera(cameraUpdate);
+                if (marker == null) {
+                    mMap.addMarker(new MarkerOptions().position(lat)
+                            .title(user.username));
+                } else {
+                    marker.setPosition(lat);
+                }
+
+
+            }
+        }
     }
 
     @Override
@@ -96,20 +113,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
         arrayList =(ArrayList<Users>) getArguments().getSerializable("array");
 
-        Users user = arrayList.get(1);
-        LatLng lat = new LatLng(Double.valueOf(user.lat), Double.valueOf(user.lon));
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(lat, 2);
-        if (mMap != null) {
-            mMap.animateCamera(cameraUpdate);
-            if (marker == null) {
-                mMap.addMarker(new MarkerOptions().position(lat)
-                        .title("My Current Location"));
-            } else {
-                marker.setPosition(lat);
-            }
 
-
-        }
 
     }
 
@@ -132,6 +136,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             mMapView.onResume();
             mMapView.getMapAsync(this);
         }
+
 
     }
 

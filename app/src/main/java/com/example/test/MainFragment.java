@@ -6,6 +6,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,15 +58,16 @@ public class MainFragment extends Fragment {
         mlayout = new LinearLayoutManager(getContext());
 
         mArraylist = (ArrayList<Users>) getArguments().getSerializable("array");
-        mAdapter = new MainAdapter(mArraylist);
-        mRecyclerView.setLayoutManager(mlayout);
-        mRecyclerView.setAdapter(mAdapter);
 
+        Log.d("key", mArraylist.get(0).username);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mRecyclerView = view.findViewById(R.id.recyclerview);
+        mAdapter = new MainAdapter(mArraylist);
+        mRecyclerView.setLayoutManager(mlayout);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Nullable
@@ -83,9 +85,11 @@ public class MainFragment extends Fragment {
                     locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
                     name = userName.getText().toString();
                 }
+
             }
 
         });
+
         return view;
     }
 
