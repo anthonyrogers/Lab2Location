@@ -1,5 +1,10 @@
 package com.example.test;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +23,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
@@ -25,26 +31,36 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class MainFragment extends Fragment {
 
-    RequestQueue mQueue;
-    ArrayList<Users> mArraylist;
+
+   public ArrayList<Users> mArraylist;
     RecyclerView mRecyclerView;
     RecyclerView.LayoutManager mlayout;
     RecyclerView.Adapter mAdapter;
     Button submitButton;
     EditText userName;
-    String name;
+    String name = "Anthony";
+
+    LocationManager locationManager;
+    LocationListener locationListener;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mArraylist = new ArrayList<>();
-        mQueue = Volley.newRequestQueue(getContext());
-        jsonParse();
-
         mlayout = new LinearLayoutManager(getContext());
+
+        mArraylist = (ArrayList<Users>) getArguments().getSerializable("array");
+        mAdapter = new MainAdapter(mArraylist);
+        mRecyclerView.setLayoutManager(mlayout);
+        mRecyclerView.setAdapter(mAdapter);
+
     }
 
     @Override
@@ -59,52 +75,18 @@ public class MainFragment extends Fragment {
         submitButton = view.findViewById(R.id.nameSubmitButton);
         userName = view.findViewById(R.id.nameTextBox);
 
+
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-            name = userName.getText().toString();
-            }
-        });
-        return view;
-    }
-
-
-    public void jsonParse(){
-        String url = "https://kamorris.com/lab/get_locations.php";
-
-        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                try {
-
-                    for(int i = 0; i < response.length(); i++){
-                        JSONObject jsonObject = response.getJSONObject(i);
-                        Users user = new Users();
-                        user.username = jsonObject.getString("username");
-                        user.lat = jsonObject.getString("latitude");
-                        user.lon = jsonObject.getString("longitude");
-                        mArraylist.add(user);
-
-                    }
-                    mAdapter = new MainAdapter(mArraylist);
-                    mRecyclerView.setLayoutManager(mlayout);
-                    mRecyclerView.setAdapter(mAdapter);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                if (getActivity().checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    name = userName.getText().toString();
                 }
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
 
-            }
         });
-
-        mQueue.add(request);
-
-
-
+        return view;
     }
 
 }

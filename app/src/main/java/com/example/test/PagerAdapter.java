@@ -29,4 +29,9 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return fragments.size();
     }
+
+    public ArrayList<Users> usersArrayList(){
+        MapFragment map = (MapFragment) fragments.get(1);
+        return map.arrayList;
+    }
 }
