@@ -39,9 +39,9 @@ public class Users implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if(location.distanceTo(myLocation.location) > ((Users) o).location.distanceTo(location)) {
+        if(location.distanceTo(myLocation.location) > ((Users) o).location.distanceTo(myLocation.location)) {
             return 1;
-        }else if(location.distanceTo(myLocation.location) == ((Users) o).location.distanceTo(location)){
+        }else if(location.distanceTo(myLocation.location) == ((Users) o).location.distanceTo(myLocation.location)){
             return 0;
         }else{
             return -1;

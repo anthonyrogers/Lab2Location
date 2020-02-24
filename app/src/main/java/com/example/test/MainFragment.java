@@ -58,8 +58,6 @@ public class MainFragment extends Fragment {
         mlayout = new LinearLayoutManager(getContext());
 
         mArraylist = (ArrayList<Users>) getArguments().getSerializable("array");
-
-        Log.d("key", mArraylist.get(0).username);
     }
 
     @Override

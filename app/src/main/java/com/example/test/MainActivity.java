@@ -58,13 +58,11 @@ public class MainActivity extends AppCompatActivity {
             jsonParse();
 
         //if (checkCallingOrSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-         //   locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+          //  locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
 
-            //GetLocation();
-       // }
+            GetLocation();
+      //  }
 
-
-            //mPageAdapter = new PagerAdapter(getSupportFragmentManager());
            mViewPager = findViewById(R.id.container);
     }
 
@@ -115,11 +113,8 @@ public class MainActivity extends AppCompatActivity {
                         userArrayList.add(user);
 
                     }
-                    Log.d("key", userArrayList.get(0).username);
                     Collections.sort(userArrayList);
                     setupViewPager(mViewPager);
-
-
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -134,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         mQueue.add(request);
-       // Log.d("Key", userArrayList.get(0).username);
+
     }
 
     private void GetLocation(){
